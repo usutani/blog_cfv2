@@ -1,9 +1,3 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-#
 default: &default
   adapter: sqlite3
   pool: 5
@@ -13,13 +7,25 @@ development:
   <<: *default
   database: db/development.sqlite3
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
   database: db/test.sqlite3
 
+<%
+credentials = if ENV['VCAP_SERVICES']
+                mydb = JSON.parse(ENV['VCAP_SERVICES'])['postgresql-9.2']
+                mydb.first['credentials']
+              else
+                Hash.new().default = 'N/A'
+              end
+%>
 production:
-  <<: *default
-  database: db/production.sqlite3
+  adapter: pg
+  encoding: utf8
+  reconnect: false
+  pool: 5
+  host: <%= credentials["host"] %>
+  username: <%= credentials["username"] %>
+  password: <%= credentials["password"] %>
+  database: <%= credentials["name"] %>
+  port: <%= credentials["port"] %>
