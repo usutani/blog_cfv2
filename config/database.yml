@@ -13,14 +13,14 @@ test:
 
 <%
 credentials = if ENV['VCAP_SERVICES']
-                mydb = JSON.parse(ENV['VCAP_SERVICES'])['postgresql-9.2']
+                mydb = JSON.parse(ENV['VCAP_SERVICES'])['mysql-5.5']
                 mydb.first['credentials']
               else
                 Hash.new().default = 'N/A'
               end
 %>
 production:
-  adapter: pg
+  adapter: mysql2
   encoding: utf8
   reconnect: false
   pool: 5
