@@ -10,22 +10,3 @@ development:
 test:
   <<: *default
   database: db/test.sqlite3
-
-<%
-credentials = if ENV['VCAP_SERVICES']
-                mydb = JSON.parse(ENV['VCAP_SERVICES'])['postgresql-9.2']
-                mydb.first['credentials']
-              else
-                Hash.new().default = 'N/A'
-              end
-%>
-production:
-  adapter: pg
-  encoding: utf8
-  reconnect: false
-  pool: 5
-  host: <%= credentials["host"] %>
-  username: <%= credentials["username"] %>
-  password: <%= credentials["password"] %>
-  database: <%= credentials["name"] %>
-  port: <%= credentials["port"] %>
